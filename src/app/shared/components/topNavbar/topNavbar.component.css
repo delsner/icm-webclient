@@ -1,0 +1,18 @@
+.tn-top-nav {
+    height: 50px;
+    background-color: #444c62;
+}
+
+#logo {
+    margin: 0;
+    padding: 0;
+    width: 100px;
+    height: 26px;
+    background-size: 100px 26px;
+    background-repeat: no-repeat;
+    background-image: url("/assets/img/taskWhite.png");
+}
+
+.pointer {
+  cursor:pointer;
+}

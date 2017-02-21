@@ -1,10 +1,30 @@
-import { NgModule, ApplicationRef } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
-import { RouterModule } from '@angular/router';
-import { removeNgStyles, createNewHosts, createInputTransfer } from '@angularclass/hmr';
-import { Ng2BootstrapModule } from 'ng2-bootstrap';
+import {
+  NgModule,
+  ApplicationRef
+} from '@angular/core';
+import {
+  removeNgStyles,
+  createNewHosts,
+  createInputTransfer
+} from '@angularclass/hmr';
+import {
+  RouterModule,
+  PreloadAllModules
+} from '@angular/router';
+import { CookieService } from 'angular2-cookie/services/cookies.service';
+import { MaterialModule } from '@angular/material';
+import { FlexLayoutModule } from "@angular/flex-layout";
+
+// Self-written modules
+import { ClientModule } from './client/client.module';
+import { LoginModule } from './login/login.module';
+import { SettingsModule } from './settings/settings.module';
+import { TaskOverviewModule } from './taskOverview/taskOverview.module';
+import { DashboardModule } from './dashboard/dashboard.module';
+import { SharedModule } from './shared'; // all shared components
 
 /*
  * Platform and Environment providers/directives/pipes
@@ -13,17 +33,14 @@ import { ENV_PROVIDERS } from './environment';
 import { ROUTES } from './app.routes';
 // App is our top level component
 import { AppComponent } from './app.component';
-import { APP_RESOLVER_PROVIDERS } from './app.resolver';
 import { AppState, InternalStateType } from './app.service';
-import { HomeComponent } from './home';
-import { AboutComponent } from './about';
-import { NoContentComponent } from './no-content';
-import { XLarge } from './home/x-large';
-import {Angular2FlexModule} from 'angular2-flex';
+import { AuthGuard } from './app.authGuard';
+
+import '../styles/styles.scss';
+import '../styles/headings.css';
 
 // Application wide providers
 const APP_PROVIDERS = [
-  ...APP_RESOLVER_PROVIDERS,
   AppState
 ];
 
@@ -40,28 +57,39 @@ type StoreType = {
   bootstrap: [ AppComponent ],
   declarations: [
     AppComponent,
-    AboutComponent,
-    HomeComponent,
-    NoContentComponent,
-    XLarge
   ],
   imports: [ // import Angular's modules
     BrowserModule,
     FormsModule,
     HttpModule,
-    RouterModule.forRoot(ROUTES, { useHash: true }),
-    Ng2BootstrapModule,
-    Angular2FlexModule.forRoot()
+    RouterModule.forRoot(ROUTES, { useHash: false }),
+    MaterialModule.forRoot(),
+    FlexLayoutModule.forRoot(),
+    // custom modules
+    LoginModule,
+    ClientModule,
+    SettingsModule,
+    TaskOverviewModule,
+    DashboardModule,
+    SharedModule
   ],
   providers: [ // expose our Services and Providers into Angular's dependency injection
     ENV_PROVIDERS,
-    APP_PROVIDERS
+    APP_PROVIDERS,
+    // external
+    CookieService,
+    // services
+    AuthGuard
   ]
 })
 export class AppModule {
-  constructor(public appRef: ApplicationRef, public appState: AppState) {}
 
-  hmrOnInit(store: StoreType) {
+  constructor(
+    public appRef: ApplicationRef,
+    public appState: AppState
+  ) {}
+
+hmrOnInit(store: StoreType) {
     if (!store || !store.state) return;
     console.log('HMR store', JSON.stringify(store, null, 2));
     // set state
@@ -85,7 +113,7 @@ export class AppModule {
     // recreate root elements
     store.disposeOldHosts = createNewHosts(cmpLocation);
     // save input values
-    store.restoreInputValues  = createInputTransfer();
+    store.restoreInputValues = createInputTransfer();
     // remove styles
     removeNgStyles();
   }

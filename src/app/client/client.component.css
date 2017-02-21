@@ -1,0 +1,19 @@
+.padding {
+  padding: 8px;
+}
+
+.list-container {
+    z-index: 999;
+}
+
+.full button span {
+  background-color: limegreen;
+  border-radius: 32px;
+  color: black;
+}
+
+.partially button span {
+  background-color: orange;
+  border-radius: 32px;
+  color: black;
+}

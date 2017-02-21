@@ -1,0 +1,11 @@
+<md-card fxFlex>
+<md-tab-group>
+  <md-tab label="Trello">
+    <trello [trelloConfig]="trelloConfig"></trello>
+  </md-tab>
+  <md-tab label="SocioCortex">
+    <socioCortex (updateUserWithScConfig)="updateUserWithScConfig($event)"
+    [scConfig]="scConfig"></socioCortex>
+    </md-tab>
+</md-tab-group>
+</md-card>
